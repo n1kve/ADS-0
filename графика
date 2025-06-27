@@ -61,3 +61,43 @@ public class SumCalculator {
         frame.setVisible(true);
     }
 }
+
+ Калькулятор с двумя полями ввода
+
+Решение:
+
+java
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class SimpleCalculator {
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Калькулятор");
+        frame.setSize(300, 200);
+        frame.setLayout(new FlowLayout());
+
+        JTextField num1 = new JTextField(10);
+        JTextField num2 = new JTextField(10);
+        JLabel result = new JLabel("Результат: ");
+
+        JButton add = new JButton("+");
+        add.addActionListener(e -> {
+            try {
+                double a = Double.parseDouble(num1.getText());
+                double b = Double.parseDouble(num2.getText());
+                result.setText("Результат: " + (a + b));
+            } catch (NumberFormatException ex) {
+                result.setText("Ошибка ввода!");
+            }
+        });
+
+        // Аналогично для других кнопок (-, *, /)
+
+        frame.add(num1);
+        frame.add(num2);
+        frame.add(add);
+        frame.add(result);
+        frame.setVisible(true);
+    }
+}
