@@ -1,0 +1,176 @@
+Равнобедренный треугольник из повторяющихся чисел
+public class Main {
+    public static void main(String[] args) {
+        int n = 4;
+        
+        for (int i = 1; i <= n; i++) {
+            // Пробелы перед числами
+            for (int j = 1; j <= n - i; j++) {
+                System.out.print(" ");
+            }
+            // Числа с пробелами
+            for (int k = 1; k <= i; k++) {
+                System.out.print(i + " ");
+            }
+            System.out.println();
+        }
+    }
+}
+
+Ромб из повторяющихся чисел
+public class Main {
+    public static void main(String[] args) {
+        int n = 4;
+        
+        // Верхняя часть (треугольник)
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= n - i; j++) {
+                System.out.print(" ");
+            }
+            for (int k = 1; k <= i; k++) {
+                System.out.print(i + " ");
+            }
+            System.out.println();
+        }
+        
+        // Нижняя часть (перевёрнутый треугольник)
+        for (int i = n - 1; i >= 1; i--) {
+            for (int j = 1; j <= n - i; j++) {
+                System.out.print(" ");
+            }
+            for (int k = 1; k <= i; k++) {
+                System.out.print(i + " ");
+            }
+            System.out.println();
+        }
+    }
+}
+
+Обычный треугольник (лесенка)
+public class RepeatingNumbersTriangle {
+    public static void main(String[] args) {
+        int n = 4;
+        
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= i; j++) {
+                System.out.print(i + " ");
+            }
+            System.out.println();
+        }
+    }
+}
+
+Перевёрнутый треугольник
+public class InvertedRepeatingTriangle {
+    public static void main(String[] args) {
+        int n = 4;
+        
+        for (int i = n; i >= 1; i--) {
+            for (int j = 1; j <= i; j++) {
+                System.out.print(i + " ");
+            }
+            System.out.println();
+        }
+    }
+}
+
+Прямоугольник с повторяющимися числами
+public class RepeatingNumbersRectangle {
+    public static void main(String[] args) {
+        int rows = 3;
+        int cols = 5;
+        
+        for (int i = 1; i <= rows; i++) {
+            for (int j = 1; j <= cols; j++) {
+                System.out.print(i);
+            }
+            System.out.println();
+        }
+    }
+}
+
+Сортировка пузырьком (Bubble Sort)
+java
+public class BubbleSort {
+    public static void bubbleSort(int[] arr) {
+        int n = arr.length;
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - i - 1; j++) {
+                if (arr[j] > arr[j + 1]) {
+                    // Обмен элементов
+                    int temp = arr[j];
+                    arr[j] = arr[j + 1];
+                    arr[j + 1] = temp;
+                }
+            }
+        }
+    }
+
+Сортировка выбором (Selection Sort)
+public class SelectionSort {
+    public static void selectionSort(int[] arr) {
+        int n = arr.length;
+        for (int i = 0; i < n - 1; i++) {
+            int minIndex = i;
+            for (int j = i + 1; j < n; j++) {
+                if (arr[j] < arr[minIndex]) {
+                    minIndex = j;
+                }
+            }
+            // Обмен элементов
+            int temp = arr[minIndex];
+            arr[minIndex] = arr[i];
+            arr[i] = temp;
+        }
+    }
+
+ортировка вставками (Insertion Sort)
+public class InsertionSort {
+    public static void insertionSort(int[] arr) {
+        int n = arr.length;
+        for (int i = 1; i < n; i++) {
+            int key = arr[i];
+            int j = i - 1;
+            while (j >= 0 && arr[j] > key) {
+                arr[j + 1] = arr[j];
+                j--;
+            }
+            arr[j + 1] = key;
+        }
+    }
+
+Быстрая сортировка (Quick Sort)
+public class QuickSort {
+    public static void quickSort(int[] arr, int low, int high) {
+        if (low < high) {
+            int pivotIndex = partition(arr, low, high);
+            quickSort(arr, low, pivotIndex - 1);
+            quickSort(arr, pivotIndex + 1, high);
+        }
+    }
+
+    public static int partition(int[] arr, int low, int high) {
+        int pivot = arr[high];
+        int i = low - 1;
+        for (int j = low; j < high; j++) {
+            if (arr[j] < pivot) {
+                i++;
+                // Обмен элементов
+                int temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+            }
+        }
+        // Помещаем pivot на правильное место
+        int temp = arr[i + 1];
+        arr[i + 1] = arr[high];
+        arr[high] = temp;
+        return i + 1;
+    }
+
+    public static void main(String[] args) {
+        int[] arr = {10, 7, 8, 9, 1, 5};
+        quickSort(arr, 0, arr.length - 1);
+        System.out.println("Отсортированный массив: " + Arrays.toString(arr));
+    }
+}
