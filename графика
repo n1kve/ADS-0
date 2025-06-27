@@ -1,0 +1,63 @@
+Задание 1:
+Создайте окно с кнопкой и меткой. При нажатии кнопки метка должна менять текст на "Кнопка нажата!".
+
+Решение:
+
+import javax.swing.*;
+import java.awt.event.*;
+
+public class ButtonLabelExample {
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Пример с кнопкой");
+        frame.setSize(300, 200);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        JPanel panel = new JPanel();
+        JLabel label = new JLabel("Жду нажатия...");
+        JButton button = new JButton("Нажми меня");
+
+        button.addActionListener(e -> label.setText("Кнопка нажата!"));
+
+        panel.add(button);
+        panel.add(label);
+        frame.add(panel);
+        frame.setVisible(true);
+    }
+}
+Задание 2:
+Создайте окно с двумя текстовыми полями и кнопкой. При нажатии кнопки выводите сумму чисел из полей в диалоговом окне.
+
+Решение:
+
+import javax.swing.*;
+import java.awt.event.*;
+
+public class SumCalculator {
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Калькулятор суммы");
+        frame.setSize(350, 200);
+
+        JPanel panel = new JPanel();
+        JTextField num1Field = new JTextField(10);
+        JTextField num2Field = new JTextField(10);
+        JButton sumButton = new JButton("Сложить");
+
+        sumButton.addActionListener(e -> {
+            try {
+                int num1 = Integer.parseInt(num1Field.getText());
+                int num2 = Integer.parseInt(num2Field.getText());
+                JOptionPane.showMessageDialog(frame, "Сумма: " + (num1 + num2));
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(frame, "Ошибка! Введите числа.");
+            }
+        });
+
+        panel.add(new JLabel("Число 1:"));
+        panel.add(num1Field);
+        panel.add(new JLabel("Число 2:"));
+        panel.add(num2Field);
+        panel.add(sumButton);
+        frame.add(panel);
+        frame.setVisible(true);
+    }
+}
