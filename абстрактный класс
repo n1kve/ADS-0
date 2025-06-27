@@ -1,0 +1,38 @@
+Задание 1: Абстрактный класс "Транспорт"
+
+abstract class Transport {
+    int speed;
+    
+    abstract void move();
+    
+    void displaySpeed() {
+        System.out.println("Скорость: " + speed + " км/ч");
+    }
+}
+
+class Boat extends Transport {
+    @Override
+    void move() {
+        System.out.println("Лодка плывёт");
+    }
+}
+Задание 2: Абстрактный класс "Фигура"
+
+abstract class Shape {
+    abstract double area();
+    abstract double perimeter();
+}
+
+class Square extends Shape {
+    double side;
+    
+    @Override
+    double area() {
+        return side * side;
+    }
+    
+    @Override
+    double perimeter() {
+        return 4 * side;
+    }
+}
