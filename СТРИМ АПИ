@@ -1,0 +1,147 @@
+азовые задачи
+1.1. Фильтрация четных чисел
+Задача: Отфильтровать четные числа из списка.
+
+java
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6);
+List<Integer> evenNumbers = numbers.stream()
+    .filter(n -> n % 2 == 0)
+    .collect(Collectors.toList());
+// Результат: [2, 4, 6]
+1.2. Преобразование строк в верхний регистр
+Задача: Преобразовать все строки в списке в верхний регистр.
+
+java
+List<String> words = Arrays.asList("apple", "banana", "cherry");
+List<String> upperCaseWords = words.stream()
+    .map(String::toUpperCase)
+    .collect(Collectors.toList());
+// Результат: ["APPLE", "BANANA", "CHERRY"]
+1.3. Сумма чисел
+Задача: Найти сумму всех чисел в списке.
+
+java
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+int sum = numbers.stream()
+    .reduce(0, Integer::sum);
+// Результат: 15
+1.4. Поиск максимального числа
+Задача: Найти максимальное число в списке.
+
+java
+List<Integer> numbers = Arrays.asList(5, 3, 8, 1, 9);
+Optional<Integer> max = numbers.stream()
+    .max(Integer::compareTo);
+// Результат: Optional[9]
+2. Задачи средней сложности
+2.1. Группировка слов по длине
+Задача: Сгруппировать слова по их длине.
+
+java
+List<String> words = Arrays.asList("cat", "dog", "elephant", "fox");
+Map<Integer, List<String>> groupedByLength = words.stream()
+    .collect(Collectors.groupingBy(String::length));
+// Результат: {3=["cat", "dog", "fox"], 8=["elephant"]}
+2.2. Подсчет количества вхождений слова
+Задача: Подсчитать, сколько раз каждое слово встречается в списке.
+
+java
+List<String> words = Arrays.asList("apple", "banana", "apple", "cherry", "banana");
+Map<String, Long> wordCount = words.stream()
+    .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+// Результат: {apple=2, banana=2, cherry=1}
+2.3. Объединение строк через запятую
+Задача: Объединить все строки в списке через запятую.
+
+java
+List<String> words = Arrays.asList("Java", "Python", "C++");
+String result = words.stream()
+    .collect(Collectors.joining(", "));
+// Результат: "Java, Python, C++"
+2.4. Фильтрация и сортировка объектов
+Задача: Отфильтровать студентов старше 20 лет и отсортировать по имени.
+
+java
+List<Student> students = Arrays.asList(
+    new Student("Alice", 22),
+    new Student("Bob", 19),
+    new Student("Charlie", 23)
+);
+
+List<Student> filteredAndSorted = students.stream()
+    .filter(s -> s.getAge() > 20)
+    .sorted(Comparator.comparing(Student::getName))
+    .collect(Collectors.toList());
+// Результат: [Alice (22), Charlie (23)]
+3. Сложные задачи
+3.1. Поиск первого четного числа
+Задача: Найти первое четное число в списке.
+
+java
+List<Integer> numbers = Arrays.asList(1, 3, 5, 2, 4, 6);
+Optional<Integer> firstEven = numbers.stream()
+    .filter(n -> n % 2 == 0)
+    .findFirst();
+// Результат: Optional[2]
+3.2. Разделение чисел на четные и нечетные
+Задача: Разделить числа на два списка: четные и нечетные.
+
+java
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6);
+Map<Boolean, List<Integer>> partitioned = numbers.stream()
+    .collect(Collectors.partitioningBy(n -> n % 2 == 0));
+// Результат: {false=[1, 3, 5], true=[2, 4, 6]}
+3.3. Вычисление среднего возраста студентов
+Задача: Найти средний возраст студентов.
+
+java
+List<Student> students = Arrays.asList(
+    new Student("Alice", 22),
+    new Student("Bob", 19),
+    new Student("Charlie", 23)
+);
+
+double averageAge = students.stream()
+    .mapToInt(Student::getAge)
+    .average()
+    .orElse(0.0);
+// Результат: 21.333...
+3.4. Поиск самого длинного слова
+Задача: Найти самое длинное слово в списке.
+
+java
+List<String> words = Arrays.asList("Java", "Python", "JavaScript");
+Optional<String> longestWord = words.stream()
+    .max(Comparator.comparingInt(String::length));
+// Результат: Optional["JavaScript"]
+4. Задачи с несколькими операциями
+4.1. Фильтрация, преобразование и сортировка
+Задача: Отфильтровать числа больше 5, преобразовать в строки и отсортировать.
+
+java
+List<Integer> numbers = Arrays.asList(7, 2, 9, 4, 10, 3);
+List<String> result = numbers.stream()
+    .filter(n -> n > 5)
+    .map(n -> "Number: " + n)
+    .sorted()
+    .collect(Collectors.toList());
+// Результат: ["Number: 7", "Number: 9", "Number: 10"]
+4.2. Подсчет суммы квадратов чисел
+Задача: Найти сумму квадратов всех чисел в списке.
+
+java
+List<Integer> numbers = Arrays.asList(1, 2, 3);
+int sumOfSquares = numbers.stream()
+    .map(n -> n * n)
+    .reduce(0, Integer::sum);
+// Результат: 14 (1 + 4 + 9)
+4.3. Удаление дубликатов и сортировка
+Задача: Удалить дубликаты из списка и отсортировать его.
+
+java
+List<Integer> numbers = Arrays.asList(3, 1, 2, 3, 4, 2);
+List<Integer> uniqueSorted = numbers.stream()
+    .distinct()
+    .sorted()
+    .collect(Collectors.toList());
+// Результат: [1, 2, 3, 4]
