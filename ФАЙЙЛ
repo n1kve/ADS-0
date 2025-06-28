@@ -1,0 +1,89 @@
+Построчное чтение текстового файла
+import java.io.*; // Импорт классов для работы с вводом-выводом
+
+public class ReadFileExample {
+    public static void main(String[] args) {
+        // try-with-resources автоматически закроет потоки
+        try (BufferedReader reader = new BufferedReader(new FileReader("input.txt"))) {
+            String line; // Переменная для хранения текущей строки
+            
+            // Читаем файл построчно, пока не достигнем конца (readLine вернет null)
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line); // Выводим строку в консоль
+            }
+        } catch (IOException e) { // Ловим исключения ввода-вывода
+            System.err.println("Ошибка при чтении файла: " + e.getMessage());
+        }
+    }
+}
+
+Чтение всего файла сразу (Java 7+)
+java
+import java.nio.file.*; // Импорт классов NIO (новый ввод-вывод)
+
+public class ReadAllLinesExample {
+    public static void main(String[] args) {
+        try {
+            // Files.readAllLines читает все строки файла в List<String>
+            for (String line : Files.readAllLines(Paths.get("input.txt"))) {
+                System.out.println(line); // Выводим каждую строку
+            }
+        } catch (IOException e) { // Ловим исключения
+            System.err.println("Ошибка: " + e.getMessage());
+        }
+    }
+}
+
+Построчная запись в текстовый файл
+import java.io.*;
+
+public class WriteFileExample {
+    public static void main(String[] args) {
+        // try-with-resources для автоматического закрытия BufferedWriter
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("output.txt"))) {
+            writer.write("Первая строка"); // Записываем строку
+            writer.newLine(); // Переходим на новую строку
+            writer.write("Вторая строка"); // Записываем вторую строку
+        } catch (IOException e) { // Обработка ошибок
+            System.err.println("Ошибка при записи: " + e.getMessage());
+        }
+    }
+}
+
+Задание 1: Копирование файла
+Условие: Напишите программу, которая копирует содержимое файла source.txt в destination.txt.
+
+Решение:
+
+java
+import java.io.*;
+
+public class FileCopyExample {
+    public static void main(String[] args) {
+        try (
+            BufferedReader reader = new BufferedReader(new FileReader("source.txt"));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("destination.txt"))
+        ) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                writer.write(line);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.err.println("Ошибка: " + e.getMessage());
+        }
+    }
+}
+Задание 2: Подсчёт строк в файле
+Условие: Напишите метод, который возвращает количество строк в файле.
+
+Решение:
+
+java
+public static int countLines(String filename) throws IOException {
+    try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+        int lines = 0;
+        while (reader.readLine() != null) lines++;
+        return lines;
+    }
+}
