@@ -1,0 +1,108 @@
+. Практические примеры
+Задача 1: Обработка списка
+java
+List<String> names = new ArrayList<>(List.of("Alice", "Bob", "Charlie"));
+names.removeIf(name -> name.length() > 4); // Удалить длинные имена
+names.forEach(System.out::println); // Bob
+Задача 2: Очередь задач
+java
+Queue<String> tasks = new LinkedList<>();
+tasks.offer("Task 1");
+tasks.offer("Task 2");
+while (!tasks.isEmpty()) {
+    System.out.println("Processing: " + tasks.poll());
+}
+Задача 3: Приоритетная очередь
+java
+Queue<Integer> numbers = new PriorityQueue<>();
+numbers.offer(5);
+numbers.offer(1);
+numbers.offer(3);
+while (!numbers.isEmpty()) {
+    System.out.println(numbers.poll()); // 1, 3, 5
+}
+
+Задача 1.1: Перевернуть список
+
+java
+List<Integer> list = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5));
+Collections.reverse(list);
+System.out.println(list); // [5, 4, 3, 2, 1]
+Задача 1.2: Найти пересечение двух списков
+
+java
+List<Integer> list1 = new ArrayList<>(Arrays.asList(1, 2, 3));
+List<Integer> list2 = new ArrayList<>(Arrays.asList(2, 3, 4));
+list1.retainAll(list2);
+System.out.println(list1); // [2, 3]
+Задача 1.3: Удалить дубликаты из списка
+
+java
+List<String> list = new ArrayList<>(Arrays.asList("a", "b", "a", "c"));
+List<String> unique = new ArrayList<>(new LinkedHashSet<>(list));
+System.out.println(unique); // [a, b, c]
+Задача 1.4: Разделить список на подсписки по N элементов
+
+java
+List<Integer> list = Arrays.asList(1, 2, 3, 4, 5, 6, 7);
+int chunkSize = 3;
+List<List<Integer>> chunks = new ArrayList<>();
+for (int i = 0; i < list.size(); i += chunkSize) {
+    chunks.add(list.subList(i, Math.min(i + chunkSize, list.size())));
+}
+System.out.println(chunks); // [[1, 2, 3], [4, 5, 6], [7]]
+2. Задачи на Queue (LinkedList/PriorityQueue)
+Задача 2.1: Реализовать очередь с помощью LinkedList
+
+java
+Queue<String> queue = new LinkedList<>();
+queue.offer("First");
+queue.offer("Second");
+queue.offer("Third");
+while (!queue.isEmpty()) {
+    System.out.println(queue.poll()); // First, Second, Third
+}
+Задача 2.2: Приоритетная очередь строк по длине
+
+java
+Queue<String> pq = new PriorityQueue<>(Comparator.comparingInt(String::length));
+pq.offer("Java");
+pq.offer("Python");
+pq.offer("C++");
+while (!pq.isEmpty()) {
+    System.out.println(pq.poll()); // C++, Java, Python
+}
+Задача 2.3: Обработка задач с приоритетом
+
+java
+record Task(String name, int priority) {}
+Queue<Task> tasks = new PriorityQueue<>(Comparator.comparingInt(Task::priority).reversed());
+tasks.offer(new Task("Low", 1));
+tasks.offer(new Task("High", 3));
+tasks.offer(new Task("Medium", 2));
+while (!tasks.isEmpty()) {
+    System.out.println(tasks.poll().name()); // High, Medium, Low
+}
+3. Комбинированные задачи
+Задача 3.1: Преобразование List в Queue
+
+java
+List<String> list = Arrays.asList("A", "B", "C");
+Queue<String> queue = new LinkedList<>(list);
+System.out.println(queue.poll()); // A
+Задача 3.2: Поиск N максимальных элементов
+
+java
+List<Integer> numbers = Arrays.asList(5, 2, 9, 1, 7);
+PriorityQueue<Integer> maxHeap = new PriorityQueue<>(Collections.reverseOrder());
+maxHeap.addAll(numbers);
+int n = 3;
+for (int i = 0; i < n; i++) {
+    System.out.println(maxHeap.poll()); // 9, 7, 5
+}
+Задача 3.3: Круговая очередь (используя ArrayDeque)
+
+java
+Deque<String> deque = new ArrayDeque<>(Arrays.asList("A", "B", "C"));
+deque.offerLast(deque.pollFirst()); // Перемещаем первый в конец
+System.out.println(deque); // [B, C, A]
