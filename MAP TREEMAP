@@ -1,0 +1,126 @@
+Подсчет частоты слов в тексте
+Задача: Написать программу, которая подсчитывает, сколько раз каждое слово встречается в тексте.
+Решение:
+
+java
+import java.util.*;
+
+public class WordFrequency {
+    public static void main(String[] args) {
+        String text = "apple banana apple cherry banana apple";
+        Map<String, Integer> frequencyMap = new TreeMap<>(); // или HashMap
+        
+        for (String word : text.split(" ")) {
+            frequencyMap.put(word, frequencyMap.getOrDefault(word, 0) + 1);
+        }
+        
+        System.out.println(frequencyMap); // {apple=3, banana=2, cherry=1}
+    }
+}
+1.2. Сортировка студентов по баллам
+Задача: Дан Map<String, Integer> (имя студента → балл). Отсортировать по убыванию баллов.
+Решение:
+
+java
+import java.util.*;
+
+public class SortStudents {
+    public static void main(String[] args) {
+        Map<String, Integer> students = new HashMap<>();
+        students.put("Alice", 85);
+        students.put("Bob", 92);
+        students.put("Charlie", 78);
+        
+        // Сортировка через TreeMap с компаратором
+        TreeMap<String, Integer> sorted = new TreeMap<>((a, b) -> 
+            students.get(b).compareTo(students.get(a)));
+        sorted.putAll(students);
+        
+        System.out.println(sorted); // {Bob=92, Alice=85, Charlie=78}
+    }
+}
+1.3. Поиск ближайшего ключа в TreeMap
+Задача: Дан TreeMap<Integer, String>. Найти ключ, ближайший к заданному числу.
+Решение:
+
+java
+import java.util.*;
+
+public class NearestKey {
+    public static void main(String[] args) {
+        TreeMap<Integer, String> map = new TreeMap<>();
+        map.put(10, "A");
+        map.put(20, "B");
+        map.put(30, "C");
+        
+        int key = 25;
+        Integer floorKey = map.floorKey(key); // 20
+        Integer ceilingKey = map.ceilingKey(key); // 30
+        
+        System.out.println("Ближайший меньший: " + floorKey);
+        System.out.println("Ближайший больший: " + ceilingKey);
+    }
+}
+2. Задания по LinkedList
+2.1. Реализация стека (LIFO)
+Задача: Использовать LinkedList как стек (добавление и удаление с начала).
+Решение:
+
+java
+import java.util.*;
+
+public class StackExample {
+    public static void main(String[] args) {
+        LinkedList<String> stack = new LinkedList<>();
+        
+        stack.push("A"); // [A]
+        stack.push("B"); // [B, A]
+        stack.push("C"); // [C, B, A]
+        
+        System.out.println(stack.pop()); // C (удаляет)
+        System.out.println(stack); // [B, A]
+    }
+}
+2.2. Реализация очереди (FIFO)
+Задача: Использовать LinkedList как очередь (добавление в конец, удаление из начала).
+Решение:
+
+java
+import java.util.*;
+
+public class QueueExample {
+    public static void main(String[] args) {
+        LinkedList<String> queue = new LinkedList<>();
+        
+        queue.offer("A"); // [A]
+        queue.offer("B"); // [A, B]
+        queue.offer("C"); // [A, B, C]
+        
+        System.out.println(queue.poll()); // A (удаляет)
+        System.out.println(queue); // [B, C]
+    }
+}
+2.3. Разворот LinkedList
+Задача: Развернуть LinkedList без использования дополнительных структур.
+Решение:
+
+java
+import java.util.*;
+
+public class ReverseLinkedList {
+    public static void main(String[] args) {
+        LinkedList<Integer> list = new LinkedList<>(Arrays.asList(1, 2, 3, 4));
+        
+        // Способ 1: Используя стандартный метод
+        Collections.reverse(list);
+        System.out.println(list); // [4, 3, 2, 1]
+        
+        // Способ 2: Вручную
+        LinkedList<Integer> reversed = new LinkedList<>();
+        for (Integer num : list) {
+            reversed.addFirst(num);
+        }
+        System.out.println(reversed); // [1, 2, 3, 4] (если исходный был [4, 3, 2, 1])
+    }
+}
+3. Комбинированные задания
