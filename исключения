@@ -21,3 +21,36 @@ try {            reader.close();
 // мы решили, что пустая строка может нарушить в дальнейшем работу нашей программы, например, на результате этого метода нам надо вызывать метод substring(1,2), поэтому мы вынуждены прервать выполнение программы с генерацией своего типа исключения MyException с помощью throw
         throw new MyException("String can not be empty!");    }
     return s;}
+
+5. Простые задания для экзамена
+Задание 1: Создать исключение "InvalidAgeException"
+Условие:
+Напишите метод, который проверяет возраст пользователя. Если возраст < 0 или > 120, выбрасывать InvalidAgeException.
+
+Решение:
+
+java
+class InvalidAgeException extends Exception {
+    public InvalidAgeException(String message) {
+        super(message);
+    }
+}
+
+class UserValidator {
+    public void checkAge(int age) throws InvalidAgeException {
+        if (age < 0 || age > 120) {
+            throw new InvalidAgeException("Недопустимый возраст: " + age);
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        UserValidator validator = new UserValidator();
+        try {
+            validator.checkAge(-5);
+        } catch (InvalidAgeException e) {
+            System.err.println(e.getMessage());
+        }
+    }
+}
