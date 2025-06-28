@@ -1,0 +1,21 @@
+Примеры заданий и решений
+Задание 1: Парсинг строки в число
+java
+String input = "42";
+int number = Integer.parseInt(input);
+System.out.println(number * 2); // 84
+Задание 2: Сравнение двух Integer
+java
+Integer x = 100;
+Integer y = 200;
+
+if (x.compareTo(y) < 0) {
+    System.out.println("x меньше y");
+} else {
+    System.out.println("x больше или равен y");
+}
+Задание 3: Автоупаковка/распаковка
+java
+List<Integer> numbers = new ArrayList<>();
+numbers.add(10);  // Автоупаковка (int → Integer)
+int first = numbers.get(0); // Автораспаковка (Integer → int)
