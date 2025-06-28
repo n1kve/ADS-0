@@ -239,3 +239,118 @@ public class CharFrequency {
         printCharCounts("Hello World!");
     }
 }
+
+1. Подсчёт гласных букв в строке
+Задача: Написать метод, который считает количество гласных букв в строке.
+
+java
+public static int countVowels(String str) {
+    return str.replaceAll("[^аеёиоуыэюяАЕЁИОУЫЭЮЯaeiouAEIOU]", "").length();
+}
+// Пример вызова:
+System.out.println(countVowels("Привет, мир!")); // 3 (и, е, и)
+2. Переворот строки
+Задача: Развернуть строку задом наперёд.
+
+java
+public static String reverse(String str) {
+    return new StringBuilder(str).reverse().toString();
+}
+// Пример:
+System.out.println(reverse("Java")); // "avaJ"
+3. Проверка палиндрома
+Задача: Проверить, является ли строка палиндромом (читается одинаково слева направо и справа налево).
+
+java
+public static boolean isPalindrome(String str) {
+    String clean = str.replaceAll("[^a-zA-Zа-яА-Я0-9]", "").toLowerCase();
+    return clean.equals(new StringBuilder(clean).reverse().toString());
+}
+// Пример:
+System.out.println(isPalindrome("А роза упала на лапу Азора")); // true
+4. Подсчёт слов в строке
+Задача: Посчитать количество слов в строке (разделители — пробелы, запятые, точки).
+
+java
+public static int countWords(String str) {
+    return str.split("[\\s,.]+").length;
+}
+// Пример:
+System.out.println(countWords("Hello, world! Это тест.")); // 4
+5. Поиск самого длинного слова
+Задача: Найти самое длинное слово в строке.
+
+java
+public static String findLongestWord(String str) {
+    String[] words = str.split("\\s+");
+    String longest = "";
+    for (String word : words) {
+        if (word.length() > longest.length()) {
+            longest = word;
+        }
+    }
+    return longest;
+}
+// Пример:
+System.out.println(findLongestWord("Java is a programming language")); // "programming"
+6. Генератор случайной строки
+Задача: Сгенерировать случайную строку заданной длины.
+
+java
+public static String generateRandomString(int length) {
+    String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    StringBuilder sb = new StringBuilder();
+    Random random = new Random();
+    for (int i = 0; i < length; i++) {
+        sb.append(chars.charAt(random.nextInt(chars.length())));
+    }
+    return sb.toString();
+}
+// Пример:
+System.out.println(generateRandomString(10)); // "X8jK3lP9qZ"
+7. Удаление дубликатов символов
+Задача: Удалить повторяющиеся символы из строки.
+
+java
+public static String removeDuplicates(String str) {
+    return Arrays.stream(str.split(""))
+            .distinct()
+            .collect(Collectors.joining());
+}
+// Пример:
+System.out.println(removeDuplicates("aabbcc")); // "abc"
+8. Подсчёт вхождений подстроки
+Задача: Найти, сколько раз подстрока встречается в строке (без перекрытий).
+
+java
+public static int countSubstringOccurrences(String str, String substr) {
+    return (str.length() - str.replace(substr, "").length()) / substr.length();
+}
+// Пример:
+System.out.println(countSubstringOccurrences("abababa", "aba")); // 2
+9. Форматирование номера телефона
+Задача: Привести номер телефона к формату +X (XXX) XXX-XXXX.
+
+java
+public static String formatPhoneNumber(String phone) {
+    return phone.replaceFirst("(\\d)(\\d{3})(\\d{3})(\\d{4})", "+$1 ($2) $3-$4");
+}
+// Пример:
+System.out.println(formatPhoneNumber("71234567890")); // "+7 (123) 456-7890"
+10. Шифр Цезаря (сдвиг букв)
+Задача: Зашифровать строку сдвигом букв на N позиций в алфавите.
+
+java
+public static String caesarCipher(String str, int shift) {
+    StringBuilder result = new StringBuilder();
+    for (char c : str.toCharArray()) {
+        if (Character.isLetter(c)) {
+            char base = Character.isLowerCase(c) ? 'a' : 'A';
+            c = (char)(((c - base + shift) % 26) + base);
+        }
+        result.append(c);
+    }
+    return result.toString();
+}
+// Пример:
+System.out.println(caesarCipher("Hello, World!", 3)); // "Khoor, Zruog!"
