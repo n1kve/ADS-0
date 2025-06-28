@@ -1,0 +1,76 @@
+Сортировка списка с помощью лямбды
+Задача: Отсортировать список строк по длине.
+Без лямбды:
+
+java
+Collections.sort(list, new Comparator<String>() {
+    @Override
+    public int compare(String s1, String s2) {
+        return s1.length() - s2.length();
+    }
+});
+С лямбдой:
+
+java
+Collections.sort(list, (s1, s2) -> s1.length() - s2.length());
+// Или короче:
+list.sort((s1, s2) -> s1.length() - s2.length());
+2. Фильтрация списка (Stream API + лямбда)
+Задача: Оставить только четные числа.
+
+java
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+List<Integer> evenNumbers = numbers.stream()
+        .filter(x -> x % 2 == 0)
+        .collect(Collectors.toList()); // [2, 4]
+3. Вывод элементов списка (forEach + лямбда)
+Задача: Вывести все элементы списка.
+
+java
+List<String> names = List.of("Alice", "Bob", "Charlie");
+names.forEach(name -> System.out.println(name));
+// Или через method reference:
+names.forEach(System.out::println);
+4. Многопоточность (Runnable + лямбда)
+Задача: Запустить поток, который печатает "Hello!".
+Без лямбды:
+
+java
+new Thread(new Runnable() {
+    @Override
+    public void run() {
+        System.out.println("Hello!");
+    }
+}).start();
+С лямбдой:
+
+java
+new Thread(() -> System.out.println("Hello!")).start();
+5. Работа с Map (computeIfAbsent + лямбда)
+Задача: Если ключа нет в Map, добавить его со значением 0.
+
+java
+Map<String, Integer> map = new HashMap<>();
+map.computeIfAbsent("key", k -> 0); // Если "key" нет, положить 0
+6. Проверка условия (Predicate + лямбда)
+Задача: Проверить, что строка не пустая.
+
+java
+Predicate<String> isNotEmpty = s -> !s.isEmpty();
+System.out.println(isNotEmpty.test("Java")); // true
+System.out.println(isNotEmpty.test(""));     // false
+7. Преобразование списка (Function + лямбда)
+Задача: Преобразовать список строк в список их длин.
+
+java
+List<String> words = List.of("Java", "Python", "C++");
+List<Integer> lengths = words.stream()
+        .map(s -> s.length())
+        .collect(Collectors.toList()); // [4, 6, 3]
+8. Группировка элементов (Stream API + Collectors.groupingBy)
+Задача: Сгруппировать слова по длине.
+
+java
+List<String> words = List.of("cat", "dog", "bird", "lion");
+Map<Integer, List<String>> grouped = words.stream()
+        .collect(Collectors.groupingBy(s -> s.length()));
