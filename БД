@@ -1,0 +1,306 @@
+В POM
+    <dependencies>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.3.1</version>
+        </dependency>
+    </dependencies>
+
+-- Получить всех пользователей
+SELECT * FROM users;
+
+-- Получить имя и email пользователей старше 18 лет
+SELECT name, email FROM users WHERE age > 18;
+
+-- Сортировка по возрасту (DESC — по убыванию)
+SELECT * FROM users ORDER BY age DESC;
+
+-- Вывести первые 5 записей
+SELECT * FROM users LIMIT 5;
+
+
+-- Добавить одного пользователя
+INSERT INTO users (name, email, age)
+VALUES ('Иван', 'ivan@mail.ru', 25);
+
+-- Добавить несколько пользователей
+INSERT INTO users (name, email, age) VALUES
+('Анна', 'anna@mail.ru', 30),
+('Петр', 'petr@mail.ru', 22);
+
+
+
+
+
+package org.example;
+import java.sql.*;
+
+public class Main {
+    private static final String URL = "jdbc:postgresql://localhost:5432/postgres";
+    private static final String USER = "postgres";
+    private static final String PASSWORD = "postgres1234";
+
+    public static void main(String[] args) {
+        Connection connection = null;
+        Statement statement = null;
+        try {
+            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            statement = connection.createStatement();
+            String createTableSQL = "CREATE TABLE IF NOT EXISTS students (" + //
+                    "id SERIAL PRIMARY KEY, " +
+                    "name VARCHAR(100) NOT NULL, " +
+                    "age INTEGER, " +
+                    "grade VARCHAR(10))";
+            statement.executeUpdate(createTableSQL);
+            String insertSQL = "INSERT INTO students (name, age, grade) VALUES " +
+                    "('Иван Иванов', 20, 'A')";
+            statement.executeUpdate(insertSQL);
+            String selectSQL = "SELECT * FROM students";
+            ResultSet resultSet = statement.executeQuery(selectSQL);
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                int age = resultSet.getInt("age");
+                String grade = resultSet.getString("grade");
+                System.out.printf("ID: %d, Имя: %s, Возраст: %d, Оценка: %s%n",
+                        id, name, age, grade);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (statement != null) {
+                    statement.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+ПОДКЛЮЧЕНИЕ
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+public class PostgreSQLConnection {
+    private static final String URL = "jdbc:postgresql://localhost:5432/postgres";
+    private static final String USER = "postgres";
+    private static final String PASSWORD = "postgres1234";
+
+    public static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(URL, USER, PASSWORD);
+    }
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class DatabaseInitializer {
+    // Данные для подключения (замените на свои)
+    private static final String DB_URL = "jdbc:postgresql://localhost:5432/game_stats";
+    private static final String DB_USER = "postgres";
+    private static final String DB_PASSWORD = "your_password";
+
+    public static void main(String[] args) {
+        // Шаг 4: Устанавливаем соединение с базой данных
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+            System.out.println("Подключение к базе данных успешно!");
+
+            // Шаг 5: Создаем объект для выполнения SQL-запросов
+            try (Statement statement = connection.createStatement()) {
+                
+                // Шаг 6: SQL-запрос для создания таблицы
+                String createTableSQL = """
+                    CREATE TABLE IF NOT EXISTS games (
+                        IgrokW INT NOT NULL DEFAULT 0,  -- Счетчик побед игрока
+                        VragW INT NOT NULL DEFAULT 0,   -- Счетчик побед противника
+                        Nichya INT NOT NULL DEFAULT 0    -- Счетчик ничьих
+                    );
+                    """;
+                
+                // Шаг 7: Выполняем запрос на создание таблицы
+                statement.executeUpdate(createTableSQL);
+                System.out.println("Таблица 'games' создана или уже существовала");
+
+                // Шаг 8: SQL-запрос для вставки начальных данных
+                String insertDataSQL = """
+                    INSERT INTO games (IgrokW, VragW, Nichya)
+                    SELECT 0, 0, 0
+                    WHERE NOT EXISTS (SELECT 1 FROM games);
+                    """;
+                
+                // Шаг 9: Выполняем запрос на вставку данных
+                int affectedRows = statement.executeUpdate(insertDataSQL);
+                
+                if (affectedRows > 0) {
+                    System.out.println("Добавлена начальная запись с нулевыми значениями");
+                } else {
+                    System.out.println("Таблица уже содержит данные, новая запись не добавлена");
+                }
+
+            } // Statement автоматически закрывается здесь
+        } catch (SQLException e) {
+            // Шаг 10: Обработка возможных ошибок
+            System.err.println("Ошибка при работе с базой данных:");
+            e.printStackTrace();
+        } // Connection автоматически закрывается здесь
+    }
+}
+
+
+1. Шаблон для вставки данных (INSERT)
+Задача: Добавить новую запись в таблицу users.
+
+java
+import java.sql.*;
+
+public class InsertExample {
+    public static void main(String[] args) {
+        String url = "jdbc:postgresql://localhost:5432/mydb";
+        String user = "postgres";
+        String password = "password";
+
+        // SQL-запрос с параметрами (?)
+        String sql = "INSERT INTO users (name, email, age) VALUES (?, ?, ?)";
+
+        try (Connection conn = DriverManager.getConnection(url, user, password);
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            // Устанавливаем значения вместо ?
+            stmt.setString(1, "Алексей Петров");  // name
+            stmt.setString(2, "alex@mail.ru");    // email
+            stmt.setInt(3, 25);                   // age
+
+            // Выполняем запрос
+            int rows = stmt.executeUpdate();
+            System.out.println("Добавлено строк: " + rows);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
+2. Шаблон для выгрузки данных (SELECT)
+Задача: Получить всех пользователей старше 20 лет.
+
+java
+import java.sql.*;
+
+public class SelectExample {
+    public static void main(String[] args) {
+        String url = "jdbc:postgresql://localhost:5432/mydb";
+        String user = "postgres";
+        String password = "password";
+
+        String sql = "SELECT * FROM users WHERE age > ?";
+
+        try (Connection conn = DriverManager.getConnection(url, user, password);
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, 20);  // Условие: age > 20
+
+            ResultSet rs = stmt.executeQuery();
+
+            // Перебираем результаты
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                String email = rs.getString("email");
+                int age = rs.getInt("age");
+
+                System.out.printf("ID: %d, Name: %s, Email: %s, Age: %d\n", 
+                                id, name, email, age);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
+3. Шаблон для обновления данных (UPDATE)
+Задача: Изменить email пользователя с ID = 1.
+
+java
+String sql = "UPDATE users SET email = ? WHERE id = ?";
+
+try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+    stmt.setString(1, "new_email@mail.ru");  // Новый email
+    stmt.setInt(2, 1);                       // ID пользователя
+    stmt.executeUpdate();
+}
+4. Шаблон для удаления данных (DELETE)
+Задача: Удалить пользователя с email = "alex@mail.ru".
+
+java
+String sql = "DELETE FROM users WHERE email = ?";
+
+try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+    stmt.setString(1, "alex@mail.ru");
+    stmt.executeUpdate();
+}
+package org.example;
+
+import java.sql.*;
+
+public class ContactsProgram {
+    public static void main(String[] args){
+        String jdbcURL = "jdbc:postgresql://localhost:5432/postgres";
+        String username = "postgres";
+        String password = "1234";
+
+        try {
+            Connection connection = DriverManager.getConnection(jdbcURL, username, password);
+
+            System.out.println("Connected Server");
+
+// 17 - 32 вывести пользователей
+//            String sql = "SELECT * FROM contacts"; // Вывести всю таблицу
+//            Statement statement = connection.createStatement();
+//            ResultSet result = statement.executeQuery(sql);
+//
+//            while (result.next()){
+//                int id = result.getInt("id");
+//                String firstName = result.getString("first_name");
+//                String lastName = result.getString("last_name");
+//                String email = result.getString("email");
+//
+//                System.out.println("id: " + id);
+//                System.out.println("first_name: " + firstName);
+//                System.out.println("last_name: " + lastName);
+//                System.out.println("email: " + email);
+//                System.out.println();
+//            }
+
+// 33 - 43 (Добавить пользователей)
+//            String sql = "INSERT INTO contacts (id, first_name, last_name, email) VALUES (?, ?, ?, ?)" - Добавить пользователя;
+//            PreparedStatement statement = connection.prepareStatement(sql);
+//
+//            statement.setInt(1, 3);
+//            statement.setString(2, "Sergey");
+//            statement.setString(3, "Starkov");
+//            statement.setString(4, "starkov@mail.ru");
+//
+//            statement.executeUpdate();
+//            statement.close();
+
+            connection.close();
+        } catch (SQLException e) {
+            System.out.println("Error is connected");
+            throw new RuntimeException(e);
+        }
+    }
+}
