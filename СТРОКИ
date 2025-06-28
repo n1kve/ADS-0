@@ -1,0 +1,241 @@
+Класс String (неизменяемый)
+1.1 Основные методы
+Метод	Описание
+charAt(int index)	Возвращает символ по индексу
+length()	Возвращает длину строки
+substring(int start, int end)	Возвращает подстроку (до end-1)
+concat(String str)	Объединяет строки (str1 + str2)
+equals(Object obj)	Сравнивает содержимое строк
+equalsIgnoreCase(String str)	Сравнивает без учёта регистра
+isEmpty()	Проверяет, пустая ли строка
+trim()	Удаляет пробелы с обоих концов
+toLowerCase() / toUpperCase()	Изменяет регистр
+replace(char old, char new)	Заменяет символы
+replaceAll(String regex, String replacement)	Заменяет по регулярному выражению
+split(String regex)	Разбивает строку по разделителю
+indexOf(String str) / lastIndexOf(String str)	Поиск подстроки
+startsWith(String prefix) / endsWith(String suffix)	Проверка начала/конца строки
+contains(CharSequence s)	Проверяет наличие подстроки
+matches(String regex)	Проверяет соответствие regex
+format(String format, Object... args)	Форматирование строки
+valueOf(X x)	Преобразует тип X в строку
+
+Класс StringBuilder (изменяемый)
+2.1 Основные методы
+Метод	Описание
+append(X x)	Добавляет значение (любого типа)
+insert(int offset, X x)	Вставляет значение на позицию offset
+delete(int start, int end)	Удаляет символы с start до end-1
+deleteCharAt(int index)	Удаляет символ по индексу
+reverse()	Разворачивает строку
+replace(int start, int end, String str)	Заменяет часть строки
+setCharAt(int index, char ch)	Заменяет символ по индексу
+length() / capacity()	Длина строки / вместимость буфера
+toString()	Преобразует в String
+
+Класс StringTokenizer (устаревший)
+3.1 Основные методы
+Метод	Описание
+hasMoreTokens()	Проверяет наличие токенов
+nextToken()	Возвращает следующий токен
+nextToken(String delim)	Возвращает токен с новым разделителем
+countTokens()	Подсчитывает оставшиеся токены
+
+
+Примеры заданий по билету "Работа со строками"
+Задание 1: Базовые операции со строками
+Условие:
+Напишите программу, которая:
+
+Принимает строку от пользователя.
+
+Переводит её в верхний регистр.
+
+Удаляет все пробелы.
+
+Заменяет букву "А" на "4".
+
+Выводит результат.
+
+Решение:
+
+java
+import java.util.Scanner;
+
+public class StringTransformation {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Введите строку: ");
+        String input = scanner.nextLine();
+        
+        String result = input.toUpperCase()
+                           .replace(" ", "")
+                           .replace("A", "4");
+        
+        System.out.println("Результат: " + result);
+    }
+}
+Пример работы:
+
+text
+Введите строку: Hello World and Java
+Результат: HELLOWORLD4NDJ4V4
+Задание 2: Поиск подстроки
+Условие:
+Напишите метод, который:
+
+Принимает строку и подстроку.
+
+Возвращает количество вхождений подстроки в строку (без учёта регистра).
+
+Решение:
+
+java
+public class SubstringCounter {
+    public static int countSubstring(String str, String substr) {
+        String lowerStr = str.toLowerCase();
+        String lowerSubstr = substr.toLowerCase();
+        int count = 0;
+        int index = 0;
+        
+        while ((index = lowerStr.indexOf(lowerSubstr, index)) != -1) {
+            count++;
+            index += substr.length();
+        }
+        return count;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(countSubstring("Java is java and JAVA", "java")); // 3
+    }
+}
+Задание 3: Разворот строки
+Условие:
+Реализуйте разворот строки:
+
+С использованием StringBuilder.
+
+Без использования StringBuilder (через цикл).
+
+Решение:
+
+java
+public class StringReverse {
+    // Способ 1: StringBuilder
+    public static String reverseWithBuilder(String str) {
+        return new StringBuilder(str).reverse().toString();
+    }
+
+    // Способ 2: Вручную
+    public static String reverseManually(String str) {
+        char[] chars = str.toCharArray();
+        int left = 0;
+        int right = chars.length - 1;
+        
+        while (left < right) {
+            char temp = chars[left];
+            chars[left] = chars[right];
+            chars[right] = temp;
+            left++;
+            right--;
+        }
+        return new String(chars);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(reverseWithBuilder("Hello")); // olleH
+        System.out.println(reverseManually("World"));    // dlroW
+    }
+}
+Задание 4: Валидация пароля
+Условие:
+Напишите метод, который проверяет, соответствует ли пароль требованиям:
+
+Длина >= 8 символов.
+
+Содержит хотя бы одну цифру.
+
+Содержит хотя бы одну заглавную букву.
+
+Решение:
+
+java
+public class PasswordValidator {
+    public static boolean isValid(String password) {
+        return password.length() >= 8 &&
+               password.matches(".*\\d.*") &&
+               password.matches(".*[A-Z].*");
+    }
+
+    public static void main(String[] args) {
+        System.out.println(isValid("Pass123"));    // false (длина < 8)
+        System.out.println(isValid("Password1"));  // true
+    }
+}
+Задание 5: Форматирование текста
+Условие:
+Дан многострочный текст. Напишите программу, которая:
+
+Разбивает текст на строки.
+
+Удаляет пустые строки.
+
+Добавляет нумерацию строк.
+
+Выравнивает текст по ширине 50 символов.
+
+Решение:
+
+java
+public class TextFormatter {
+    public static void formatText(String text) {
+        String[] lines = text.split("\\r?\\n");
+        int lineNumber = 1;
+        
+        for (String line : lines) {
+            if (!line.trim().isEmpty()) {
+                String formatted = String.format("%2d. %-" + 50 + "s", lineNumber, line);
+                System.out.println(formatted);
+                lineNumber++;
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        String text = "Hello\n\nWorld\nJava is awesome";
+        formatText(text);
+    }
+}
+Вывод:
+
+text
+ 1. Hello                                             
+ 2. World                                             
+ 3. Java is awesome                                   
+Задание 6: Частотный анализ символов
+Условие:
+Напишите программу, которая подсчитывает, сколько раз каждый символ встречается в строке (без учёта регистра).
+
+Решение:
+
+java
+import java.util.HashMap;
+import java.util.Map;
+
+public class CharFrequency {
+    public static void printCharCounts(String str) {
+        Map<Character, Integer> counts = new HashMap<>();
+        
+        for (char c : str.toLowerCase().toCharArray()) {
+            if (Character.isLetterOrDigit(c)) {
+                counts.put(c, counts.getOrDefault(c, 0) + 1);
+            }
+        }
+        
+        counts.forEach((k, v) -> System.out.println(k + ": " + v));
+    }
+
+    public static void main(String[] args) {
+        printCharCounts("Hello World!");
+    }
+}
