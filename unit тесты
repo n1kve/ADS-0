@@ -23,12 +23,38 @@ assertThrows(exceptionClass, executable) - проверяет, что код в�
 Создать файл для тестов в папке test\java\org.example
 В  файле pom.xml добавить секцию <dependency>
  
-<dependency>
-    <groupId>org.junit.jupiter</groupId>
-    <artifactId>junit-jupiter-api</artifactId>
-    <version>5.8.2</version>
-    <scope>test</scope>
-</dependency> 
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.10.0</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+ПРОСТЕЙШИЙ ПРИМЕР
+package org.example;
+public class Main {
+    public int add(int a, int b) {
+        return a+b;
+    }
+
+}
+
+package org.example;
+import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class Tests {
+    Main calc = new Main();
+
+    @Test
+    public void testAdd() {
+        int res = calc.add(5, 124);
+        assertEquals(129, res);
+    }
+}
+
+
 
 public class Calculator {
     public int add(int a, int b) {
