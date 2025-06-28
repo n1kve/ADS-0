@@ -1,0 +1,76 @@
+
+Создайте класс Counter с синхронизированным методом increment(). Запустите несколько потоков, которые увеличивают счётчик. Убедитесь, что итоговое значение корректно.
+
+Решение:
+
+java
+class Counter {
+    private int count = 0;
+
+    // Синхронизированный метод (захватывает монитор this)
+    public synchronized void increment() {
+        count++;
+    }
+
+    public int getCount() {
+        return count;
+    }
+}
+
+public class SyncMethodExample {
+    public static void main(String[] args) throws InterruptedException {
+        Counter counter = new Counter();
+        Thread[] threads = new Thread[10];
+
+        for (int i = 0; i < 10; i++) {
+            threads[i] = new Thread(() -> {
+                for (int j = 0; j < 1000; j++) {
+                    counter.increment();
+                }
+            });
+            threads[i].start();
+        }
+
+        for (Thread t : threads) t.join();
+        System.out.println("Итог: " + counter.getCount()); // 10000
+    }
+}
+
+Примеры задач
+Задача 1. Потокобезопасный счётчик
+Условие:
+Создайте класс SafeCounter с синхронизированным методом increment(). Запустите 10 потоков, каждый из которых увеличивает счётчик на 1000.
+
+Решение:
+
+java
+class SafeCounter {
+    private int count = 0;
+    
+    public synchronized void increment() {
+        count++;
+    }
+    
+    public int getCount() {
+        return count;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) throws InterruptedException {
+        SafeCounter counter = new SafeCounter();
+        Thread[] threads = new Thread[10];
+        
+        for (int i = 0; i < 10; i++) {
+            threads[i] = new Thread(() -> {
+                for (int j = 0; j < 1000; j++) {
+                    counter.increment();
+                }
+            });
+            threads[i].start();
+        }
+        
+        for (Thread t : threads) t.join();
+        System.out.println(counter.getCount()); // 10000
+    }
+}
