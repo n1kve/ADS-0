@@ -1,0 +1,39 @@
+Задание 1: Сериализация и десериализация пользователя
+Условие:
+Создайте класс User с полями login (String) и password (String). Сериализуйте объект этого класса в файл user.dat, затем десериализуйте его обратно.
+
+Решение:
+
+java
+import java.io.*;
+
+class User implements Serializable {  // Обязательно implements Serializable!
+    private String login;
+    private String password;
+
+    public User(String login, String password) {
+        this.login = login;
+        this.password = password;
+    }
+
+    @Override
+    public String toString() {
+        return "User{login='" + login + "', password='" + password + "'}";
+    }
+}
+
+public class Main {
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
+        // Сериализация
+        User user = new User("admin", "qwerty");
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("user.dat"))) {
+            oos.writeObject(user);
+        }
+
+        // Десериализация
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("user.dat"))) {
+            User loadedUser = (User) ois.readObject();
+            System.out.println(loadedUser);  // User{login='admin', password='qwerty'}
+        }
+    }
+}
