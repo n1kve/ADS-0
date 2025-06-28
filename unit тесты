@@ -1,0 +1,146 @@
+Методы проверки (assertions):
+assertEquals(expected, actual) - проверяет равенство ожидаемого и фактического значений
+
+assertNotEquals(unexpected, actual) - проверяет неравенство
+
+assertTrue(condition) - проверяет, что условие истинно
+
+assertFalse(condition) - проверяет, что условие ложно
+
+assertNull(object) - проверяет, что объект null
+
+assertNotNull(object) - проверяет, что объект не null
+
+assertSame(expected, actual) - проверяет, что объекты ссылаются на один и тот же экземпляр
+
+assertNotSame(unexpected, actual) - проверяет, что объекты ссылаются на разные экземпляры
+
+assertArrayEquals(expectedArray, actualArray) - проверяет равенство массивов
+
+assertThrows(exceptionClass, executable) - проверяет, что код выбрасывает ожидаемое исключение
+
+
+Создать файл для тестов в папке test\java
+В  файле pom.xml добавить секцию <dependency>
+ 
+<dependency>
+    <groupId>org.junit.jupiter</groupId>
+    <artifactId>junit-jupiter-api</artifactId>
+    <version>5.8.2</version>
+    <scope>test</scope>
+</dependency> 
+
+public class Calculator {
+    public int add(int a, int b) {
+        return a + b;
+    }
+    public int subtract(int a, int b) {
+        return a - b;
+    }
+    public int multiply(int a, int b) {
+        return a * b;
+    }
+    public int divide(int a, int b) {
+        if (b == 0) {
+            throw new IllegalArgumentException("Cannot divide by zero");
+        }
+        return a / b;
+    }
+}
+
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+public class CalculatorTest {
+    @Test
+    public void testAddition() {
+        Calculator calculator = new Calculator();
+        int result = calculator.add(3, 5);
+        assertEquals(8, result);
+    }
+    @Test
+    public void testSubtraction() {
+        Calculator calculator = new Calculator();
+        int result = calculator.subtract(10, 4);
+        assertEquals(6, result);    }
+    @Test
+    public void testMultiplication() {
+        Calculator calculator = new Calculator();
+        int result = calculator.multiply(6, 3);
+        assertEquals(18, result);
+    }
+    @Test
+    public void testDivision() {
+        Calculator calculator = new Calculator();
+        int result = calculator.divide(10, 2);
+        assertEquals(5, result);    }
+    @Test
+    public void testDivisionByZero() {
+        Calculator calculator = new Calculator();
+        assertThrows(IllegalArgumentException.class, () -> {  calculator.divide(10, 0);
+        });
+    }
+} 
+
+МОЯ КУРСОВАЯ
+
+package org.example;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+class GameUnitTests {
+    private Game game;
+
+    @BeforeEach
+    void setUp() {
+        game = new Game();
+    }
+
+   ... private void Razdacha() {
+        for (int i = 0; i < 6; i++) {
+            Card pc = Coloda.drawCard();
+            if (pc != null) RukaIgroka.add(pc);
+            Card ec = Coloda.drawCard();
+            if (ec != null) RukaVraga.add(ec);
+        }
+    }...
+
+    @Test
+    void testRazdacha() {
+        assertEquals(6, game.getRukaIgroka().size(),"После создания игры у игрока должно быть 6 карт");
+        assertEquals(6, game.getRukaVraga().size(),"После создания игры у врага должно быть 6 карт");
+    }
+
+    ...public boolean AtakaIgroka(Card card) {
+        if (!RukaIgroka.contains(card)) return false;
+        RukaIgroka.remove(card);
+        tableCards.add(card);
+        tableCards.add(null);
+        return true;
+    }...
+
+    @Test
+    void testAtakaIgroka() {
+        Card attackCard = game.getRukaIgroka().getFirst();
+        assertTrue(game.AtakaIgroka(attackCard),"Атака игрока должна возвращать true при успехе");
+        assertEquals(5, game.getRukaIgroka().size(),"После атаки в руке игрока должно быть на 1 карту меньше");
+        assertEquals(2, game.getTableCards().size(),"После атаки на столе должно быть 2 карты (атакующая и null для защиты)");
+        assertNull(game.getTableCards().get(1),"Вторая карта на столе после атаки должна быть null");
+    }
+
+    ...public boolean AtakaVraga() {
+        if (RukaVraga.isEmpty()) return false;
+        Card attackCard = VyborAttackCard(RukaVraga);
+        if (attackCard == null) return false;
+        RukaVraga.remove(attackCard);
+        tableCards.add(attackCard);
+        tableCards.add(null);
+        return true;
+    }...
+
+    @Test
+    void testAtakaVraga() {
+        assertTrue(game.AtakaVraga(),"Атака компьютера должна возвращать true при успехе");
+        assertEquals(5, game.getRukaVraga().size(),"После атаки в руке компьютера должно быть на 1 карту меньше");
+        assertEquals(2, game.getTableCards().size(),"После атаки на столе должно быть 2 карты (атакующая и null для защиты)");
+        assertNull(game.getTableCards().get(1),"Вторая карта на столе после атаки должна быть null");
