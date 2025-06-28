@@ -1,0 +1,327 @@
+Класс Thread содержит несколько методов для управления потоками.
+•	getName() - получить имя потока
+•	getPriority() - получить приоритет потока
+•	isAlive() - определить, выполняется ли поток
+•	join() - ожидать завершение потока
+•	run() - запуск потока. В нём пишите свой код
+•	sleep() - приостановить поток на заданное время
+•	start() - запустить поток
+•	setName() – задать потоку имя
+
+class Worker implements Runnable {
+    public void run() {
+        for (int i = 0; i < 5; i++) {
+            System.out.println(Thread.currentThread().getName() + ": " + i);
+            Thread.yield(); // Уступаем место другим потокам
+        }
+    }
+}
+
+public class YieldExample {
+    public static void main(String[] args) {
+        Thread t1 = new Thread(new Worker(), "Thread-1");
+        Thread t2 = new Thread(new Worker(), "Thread-2");
+        t1.start();
+        t2.start();
+    }
+}
+
+Можно создавать несколько потоков:
+public static void main(String[] args) {     
+    
+    System.out.println("Main thread started...");
+    for(int i=1; i < 6; i++)
+        new JThread("JThread " + i).start();
+    System.out.println("Main thread finished...");
+}
+
+Условие:
+Создайте два потока с использованием интерфейса Runnable.
+Первый поток должен выводить "Поток 1 работает", второй — "Поток 2 работает".
+Оба потока должны выполниться одновременно.
+
+Решение
+1. Классический способ (с отдельным классом)
+java
+// Класс, реализующий Runnable
+class MyRunnable implements Runnable {
+    private String message;
+    
+    public MyRunnable(String message) {
+        this.message = message;
+    }
+    
+    @Override
+    public void run() {
+        System.out.println(message);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        // Создание потоков
+        Thread thread1 = new Thread(new MyRunnable("Поток 1 работает"));
+        Thread thread2 = new Thread(new MyRunnable("Поток 2 работает"));
+        
+        // Запуск потоков
+        thread1.start();
+        thread2.start();
+    }
+}
+
+Примеры задач по билету "Многопоточность. Управление потоками, синхронизация"
+1. Задачи на базовую многопоточность
+Задача 1. Создание и запуск потоков
+Условие:
+Создайте два потока:
+
+Первый выводит числа от 1 до 5 с задержкой 500 мс.
+
+Второй выводит буквы от 'A' до 'E' с задержкой 300 мс.
+
+Решение:
+
+java
+public class ThreadsExample {
+    public static void main(String[] args) {
+        Thread numbersThread = new Thread(() -> {
+            for (int i = 1; i <= 5; i++) {
+                System.out.println(i);
+                try { Thread.sleep(500); } 
+                catch (InterruptedException e) { e.printStackTrace(); }
+            }
+        });
+
+        Thread lettersThread = new Thread(() -> {
+            for (char c = 'A'; c <= 'E'; c++) {
+                System.out.println(c);
+                try { Thread.sleep(300); } 
+                catch (InterruptedException e) { e.printStackTrace(); }
+            }
+        });
+
+        numbersThread.start();
+        lettersThread.start();
+    }
+}
+Вывод (пример):
+
+text
+A
+1
+B
+C
+2
+D
+E
+3
+4
+5
+2. Задачи на синхронизацию
+Задача 2. Потокобезопасный счётчик
+Условие:
+Создайте класс Counter с методом increment(). Запустите 10 потоков, каждый из которых увеличивает счётчик на 1000. Убедитесь, что итоговое значение равно 10000.
+
+Решение:
+
+java
+class Counter {
+    private int count = 0;
+
+    public synchronized void increment() {
+        count++;
+    }
+
+    public int getCount() { return count; }
+}
+
+public class SyncCounterExample {
+    public static void main(String[] args) throws InterruptedException {
+        Counter counter = new Counter();
+        Thread[] threads = new Thread[10];
+
+        for (int i = 0; i < 10; i++) {
+            threads[i] = new Thread(() -> {
+                for (int j = 0; j < 1000; j++) {
+                    counter.increment();
+                }
+            });
+            threads[i].start();
+        }
+
+        for (Thread t : threads) t.join();
+        System.out.println("Итоговое значение: " + counter.getCount()); // 10000
+    }
+}
+3. Задачи на wait() и notify()
+Задача 3. Producer-Consumer
+Условие:
+Реализуйте паттерн "Производитель-Потребитель":
+
+Производитель (Producer) генерирует числа от 1 до 10.
+
+Потребитель (Consumer) выводит их в консоль.
+
+Буфер размером 1 (новое число можно положить только после того, как предыдущее было взято).
+
+Решение:
+
+java
+class Buffer {
+    private int data;
+    private boolean empty = true;
+
+    public synchronized void put(int value) throws InterruptedException {
+        while (!empty) wait();
+        data = value;
+        empty = false;
+        notify();
+    }
+
+    public synchronized int take() throws InterruptedException {
+        while (empty) wait();
+        empty = true;
+        notify();
+        return data;
+    }
+}
+
+public class ProducerConsumerExample {
+    public static void main(String[] args) {
+        Buffer buffer = new Buffer();
+
+        Thread producer = new Thread(() -> {
+            for (int i = 1; i <= 10; i++) {
+                try { buffer.put(i); } 
+                catch (InterruptedException e) { e.printStackTrace(); }
+            }
+        });
+
+        Thread consumer = new Thread(() -> {
+            for (int i = 1; i <= 10; i++) {
+                try { System.out.println(buffer.take()); } 
+                catch (InterruptedException e) { e.printStackTrace(); }
+            }
+        });
+
+        producer.start();
+        consumer.start();
+    }
+}
+Вывод:
+
+text
+1
+2
+3
+...
+10
+4. Задачи на yield()
+Задача 4. Демонстрация работы yield()
+Условие:
+Создайте два потока, выводящие числа от 1 до 100. В одном потоке используйте yield(), в другом — нет. Сравните поведение.
+
+Решение:
+
+java
+public class YieldExample {
+    public static void main(String[] args) {
+        Thread withYield = new Thread(() -> {
+            for (int i = 1; i <= 100; i++) {
+                System.out.println("Yield: " + i);
+                Thread.yield();
+            }
+        });
+
+        Thread withoutYield = new Thread(() -> {
+            for (int i = 1; i <= 100; i++) {
+                System.out.println("No Yield: " + i);
+            }
+        });
+
+        withYield.start();
+        withoutYield.start();
+    }
+}
+Наблюдение:
+Поток с yield() чаще уступает место другому потоку, но это не гарантируется JVM.
+
+5. Задачи на Deadlock
+Задача 5. Взаимная блокировка
+Условие:
+Смоделируйте deadlock:
+
+Поток 1 захватывает lockA, затем пытается взять lockB.
+
+Поток 2 захватывает lockB, затем пытается взять lockA.
+
+Решение:
+
+java
+public class DeadlockExample {
+    private static final Object lockA = new Object();
+    private static final Object lockB = new Object();
+
+    public static void main(String[] args) {
+        Thread thread1 = new Thread(() -> {
+            synchronized (lockA) {
+                System.out.println("Thread 1: захватил lockA");
+                try { Thread.sleep(100); } 
+                catch (InterruptedException e) { e.printStackTrace(); }
+                synchronized (lockB) {
+                    System.out.println("Thread 1: захватил lockB");
+                }
+            }
+        });
+
+        Thread thread2 = new Thread(() -> {
+            synchronized (lockB) {
+                System.out.println("Thread 2: захватил lockB");
+                synchronized (lockA) {
+                    System.out.println("Thread 2: захватил lockA");
+                }
+            }
+        });
+
+        thread1.start();
+        thread2.start();
+    }
+}
+Вывод:
+
+text
+Thread 1: захватил lockA
+Thread 2: захватил lockB
+... программа зависает ...
+6. Задачи на volatile
+Задача 6. Видимость переменной
+Условие:
+Покажите, как volatile решает проблему видимости изменений переменной между потоками.
+
+Решение:
+
+java
+class Shared {
+    volatile boolean flag = false; // Без volatile изменения могут не быть видны
+}
+
+public class VolatileExample {
+    public static void main(String[] args) {
+        Shared shared = new Shared();
+
+        Thread writer = new Thread(() -> {
+            try { Thread.sleep(1000); } 
+            catch (InterruptedException e) { e.printStackTrace(); }
+            shared.flag = true;
+            System.out.println("Flag set to true");
+        });
+
+        Thread reader = new Thread(() -> {
+            while (!shared.flag) {} // Бесконечный цикл без volatile
+            System.out.println("Flag is now true");
+        });
+
+        writer.start();
+        reader.start();
+    }
+}
