@@ -211,3 +211,197 @@ public class Company {
 **Пример на экзамен:**  
 1. Создать класс `Book` с полями `id`, `title`, `author`.  
 2.
+
+
+### **Примеры заданий по теме "Сериализация и десериализация в XML"**  
+
+#### **1. Базовое задание (сериализация объекта в XML)**  
+**Условие:**  
+Создайте класс `Student` с полями:  
+- `id` (int, должно быть атрибутом в XML)  
+- `name` (String)  
+- `grade` (double)  
+
+Сериализуйте объект `Student` в XML-файл `student.xml` с помощью JAXB.  
+
+**Решение:**  
+```java
+import jakarta.xml.bind.annotation.*;
+import jakarta.xml.bind.*;
+import java.io.File;
+
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+public class Student {
+    @XmlAttribute
+    private int id;
+    private String name;
+    private double grade;
+
+    // Обязательный конструктор по умолчанию
+    public Student() {}
+
+    // Геттеры и сеттеры
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    public double getGrade() { return grade; }
+    public void setGrade(double grade) { this.grade = grade; }
+
+    public static void main(String[] args) throws JAXBException {
+        Student student = new Student();
+        student.setId(1);
+        student.setName("Alice");
+        student.setGrade(4.5);
+
+        // Сериализация
+        JAXBContext context = JAXBContext.newInstance(Student.class);
+        Marshaller marshaller = context.createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        marshaller.marshal(student, new File("student.xml"));
+    }
+}
+```
+**Результат (`student.xml`):**  
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<student id="1">
+    <name>Alice</name>
+    <grade>4.5</grade>
+</student>
+```
+
+---
+
+#### **2. Десериализация XML в объект**  
+**Условие:**  
+Имеется XML-файл `book.xml`:  
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<book id="101">
+    <title>Java Programming</title>
+    <author>James Gosling</author>
+</book>
+```  
+Напишите код, который десериализует этот XML в объект класса `Book`.  
+
+**Решение:**  
+```java
+import jakarta.xml.bind.annotation.*;
+import jakarta.xml.bind.*;
+import java.io.File;
+
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+public class Book {
+    @XmlAttribute
+    private int id;
+    private String title;
+    private String author;
+
+    // Геттеры и сеттеры
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
+    public String getAuthor() { return author; }
+    public void setAuthor(String author) { this.author = author; }
+
+    public static void main(String[] args) throws JAXBException {
+        JAXBContext context = JAXBContext.newInstance(Book.class);
+        Unmarshaller unmarshaller = context.createUnmarshaller();
+        Book book = (Book) unmarshaller.unmarshal(new File("book.xml"));
+
+        System.out.println("Book: " + book.getTitle() + ", Author: " + book.getAuthor());
+    }
+}
+```
+**Вывод:**  
+```
+Book: Java Programming, Author: James Gosling
+```
+
+---
+
+#### **3. Сериализация списка объектов**  
+**Условие:**  
+Создайте класс `Library`, содержащий список книг (`List<Book>`). Сериализуйте его в XML.  
+
+**Решение:**  
+```java
+import jakarta.xml.bind.annotation.*;
+import jakarta.xml.bind.*;
+import java.io.File;
+import java.util.*;
+
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+public class Library {
+    @XmlElementWrapper(name = "books")
+    @XmlElement(name = "book")
+    private List<Book> books = new ArrayList<>();
+
+    public void addBook(Book book) { books.add(book); }
+
+    public static void main(String[] args) throws JAXBException {
+        Library library = new Library();
+
+        Book book1 = new Book();
+        book1.setId(1);
+        book1.setTitle("Clean Code");
+        book1.setAuthor("Robert Martin");
+
+        Book book2 = new Book();
+        book2.setId(2);
+        book2.setTitle("Effective Java");
+        book2.setAuthor("Joshua Bloch");
+
+        library.addBook(book1);
+        library.addBook(book2);
+
+        // Сериализация
+        JAXBContext context = JAXBContext.newInstance(Library.class);
+        Marshaller marshaller = context.createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        marshaller.marshal(library, new File("library.xml"));
+    }
+}
+```
+**Результат (`library.xml`):**  
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<library>
+    <books>
+        <book id="1">
+            <title>Clean Code</title>
+            <author>Robert Martin</author>
+        </book>
+        <book id="2">
+            <title>Effective Java</title>
+            <author>Joshua Bloch</author>
+        </book>
+    </books>
+</library>
+```
+
+---
+
+### **4. Дополнительные задания**  
+#### **Задание 4.1 (Обработка исключений)**  
+Напишите код, который пытается десериализовать XML, но обрабатывает возможные ошибки (`JAXBException`, `FileNotFoundException`).  
+
+#### **Задание 4.2 (Сложная структура XML)**  
+Создайте класс `University`, который содержит список `Faculty`, а каждый `Faculty` содержит список `Student`. Сериализуйте в XML.  
+
+---
+
+### **Вывод**  
+Эти задания охватывают:  
+✅ Базовую сериализацию/десериализацию  
+✅ Работу со списками (`List`)  
+✅ Использование аннотаций (`@XmlRootElement`, `@XmlAttribute`, `@XmlElementWrapper`)  
+✅ Обработку исключений  
+
+**Практика этих примеров поможет уверенно ответить на экзамене!** 🚀
+
