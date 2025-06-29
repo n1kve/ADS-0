@@ -37,3 +37,177 @@ public class Main {
         }
     }
 }
+
+# **Сериализация и десериализация в XML в Java**  
+**Теория + Практика для экзамена**  
+
+---
+
+## **1. Что такое сериализация и десериализация?**  
+**Сериализация** – процесс преобразования объекта в формат, пригодный для хранения или передачи (например, XML, JSON, бинарный формат).  
+**Десериализация** – обратный процесс восстановления объекта из этого формата.  
+
+### **Зачем использовать XML?**  
+✅ Человекочитаемый формат  
+✅ Поддержка сложных структур данных  
+✅ Совместимость между разными языками и системами  
+
+---
+
+## **2. Основные технологии для работы с XML в Java**  
+### **1) JAXB (Java Architecture for XML Binding)** – стандартный API для работы с XML (входит в Java до версии 11, затем вынесен в отдельный модуль).  
+### **2) DOM (Document Object Model)** – загружает весь XML в память для работы.  
+### **3) SAX (Simple API for XML)** – потоковая обработка (экономнее памяти, но сложнее в использовании).  
+### **4) StAX (Streaming API for XML)** – комбинация DOM и SAX.  
+
+**В этом билете разберём JAXB, так как он самый удобный.**  
+
+---
+
+## **3. Сериализация объекта в XML (JAXB)**  
+### **Шаг 1: Подключение зависимостей**  
+Если Java < 11: JAXB встроен.  
+Если Java ≥ 11: добавить в `pom.xml` (Maven):  
+```xml
+<dependency>
+    <groupId>jakarta.xml.bind</groupId>
+    <artifactId>jakarta.xml.bind-api</artifactId>
+    <version>4.0.0</version>
+</dependency>
+<dependency>
+    <groupId>org.glassfish.jaxb</groupId>
+    <artifactId>jaxb-runtime</artifactId>
+    <version>4.0.0</version>
+</dependency>
+```
+
+### **Шаг 2: Аннотации для класса**  
+```java
+import jakarta.xml.bind.annotation.*;
+
+@XmlRootElement(name = "person")  // Указывает корневой элемент XML
+@XmlAccessorType(XmlAccessType.FIELD)  // Сериализует поля, а не геттеры
+public class Person {
+    @XmlAttribute(name = "id")  // Поле станет атрибутом, а не элементом
+    private int id;
+
+    @XmlElement(name = "fullName")  // Можно переименовать элемент
+    private String name;
+
+    @XmlElement
+    private int age;
+
+    // Обязательно нужен конструктор по умолчанию!
+    public Person() {}
+
+    // Геттеры и сеттеры
+    // (JAXB работает с ними, если не указано XmlAccessType.FIELD)
+}
+```
+
+### **Шаг 3: Сериализация в XML**  
+```java
+import jakarta.xml.bind.*;
+
+public class Main {
+    public static void main(String[] args) throws JAXBException {
+        Person person = new Person();
+        person.setId(1);
+        person.setName("John Doe");
+        person.setAge(30);
+
+        // Сериализация в XML
+        JAXBContext context = JAXBContext.newInstance(Person.class);
+        Marshaller marshaller = context.createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);  // Красивый вывод
+
+        // Вывод в консоль
+        marshaller.marshal(person, System.out);
+
+        // Сохранение в файл
+        marshaller.marshal(person, new File("person.xml"));
+    }
+}
+```
+**Вывод (`person.xml`):**  
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<person id="1">
+    <fullName>John Doe</fullName>
+    <age>30</age>
+</person>
+```
+
+---
+
+## **4. Десериализация XML в объект**  
+```java
+import jakarta.xml.bind.*;
+
+public class Main {
+    public static void main(String[] args) throws JAXBException {
+        // Десериализация из файла
+        JAXBContext context = JAXBContext.newInstance(Person.class);
+        Unmarshaller unmarshaller = context.createUnmarshaller();
+
+        Person person = (Person) unmarshaller.unmarshal(new File("person.xml"));
+        System.out.println(person.getName());  // John Doe
+    }
+}
+```
+
+---
+
+## **5. Работа со списками (List) в XML**  
+Если класс содержит коллекции:  
+```java
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+public class Company {
+    @XmlElementWrapper(name = "employees")  // Обёртка для списка
+    @XmlElement(name = "employee")  // Имя элементов внутри списка
+    private List<Person> employees = new ArrayList<>();
+
+    // Геттеры и сеттеры
+}
+```
+**Пример XML:**  
+```xml
+<company>
+    <employees>
+        <employee id="1">
+            <fullName>John Doe</fullName>
+            <age>30</age>
+        </employee>
+        <employee id="2">
+            <fullName>Jane Smith</fullName>
+            <age>25</age>
+        </employee>
+    </employees>
+</company>
+```
+
+---
+
+## **6. Исключения при работе с JAXB**  
+- **`JAXBException`** – общая ошибка (например, если класс не аннотирован).  
+- **`IllegalAnnotationsException`** – если нет конструктора по умолчанию или некорректные аннотации.  
+
+---
+
+## **7. Альтернативы JAXB**  
+Если JAXB недоступен (например, в Android), можно использовать:  
+✅ **Simple XML Serialization** (библиотека `simple-xml`)  
+✅ **XStream** (поддержка JSON и XML)  
+
+---
+
+## **Итог**  
+✔ **Сериализация** – `JAXBContext` → `Marshaller` → `marshal()`.  
+✔ **Десериализация** – `JAXBContext` → `Unmarshaller` → `unmarshal()`.  
+✔ **Аннотации**: `@XmlRootElement`, `@XmlElement`, `@XmlAttribute`, `@XmlElementWrapper`.  
+✔ **Обязательно**: конструктор по умолчанию + геттеры/сеттеры (если не `XmlAccessType.FIELD`).  
+
+**Пример на экзамен:**  
+1. Создать класс `Book` с полями `id`, `title`, `author`.  
+2.
